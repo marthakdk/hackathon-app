@@ -1,0 +1,89 @@
+<h1>Welcome {{ currentUser.firstName }} {{ currentUser.lastName }}!</h1>
+
+<ng-template [ngIf]="ideas.length && !addNew">
+  <h3>All ideas:</h3>
+  <div class="card-deck">
+    <div class="card" *ngFor="let idea of ideas">
+      <div class="row no-gutters align-items-center">
+        <div class="col-md-2 col-xs-12 text-lg-center">
+            <app-vote-count [idea] = "idea">{{idea.upvotes}}</app-vote-count>
+        </div>
+        <div class="col-md-10 col-xs-12">
+          <div class="card-body">
+            <h5 class="card-title">{{ idea.title }}</h5>
+            <p class="card-text">
+              {{ idea.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div *ngIf="!addNew">
+  <button class="btn btn-primary" (click)="addNewIdea()">Add new idea</button>
+</div>
+
+<div class="card" *ngIf="addNew">
+  <h4 class="card-header">Add new idea</h4>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          formControlName="title"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.title.errors }"
+        />
+        <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+          <div *ngIf="f.title.errors.required">Title is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          formControlName="description"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
+        >
+        </textarea>
+        <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+          <div *ngIf="f.description.errors.required">
+            Descrpiption is required
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ftag">Tags</label>
+        <select
+          class="custom-select"
+          (change)="selectTag($event)"
+          formControlName="ftag"
+        >
+          <option value="">Select tag</option>
+          <option *ngFor="let tag of preDefinedTags" [tag]="tag">
+            {{ tag }}
+          </option>
+        </select>
+        <div
+          class="invalid-feedback"
+          *ngIf="isSubmitted && ftag.errors?.required"
+        >
+          Please select one tag
+        </div>
+      </div>
+      <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Register
+        </button>
+        <a routerLink="../login" class="btn btn-link">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
