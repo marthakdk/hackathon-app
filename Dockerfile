@@ -8,6 +8,6 @@ COPY . /app
 RUN npm run build --prod
 # Stage 2
 FROM nginx:1.17.1-alpine
-COPY --from=build-step /app/dist /usr/share/nginx/html
-EXPOSE 8000 80 
+COPY --from=build-step /app/dist/hackathon-ideas-app /usr/share/nginx/html
+EXPOSE 3000 80 
 CMD ["nginx", "-g", "daemon off;"]
